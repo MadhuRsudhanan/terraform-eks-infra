@@ -8,6 +8,8 @@ on:
 
 env:
   TF_WORKSPACE: dev
+  AWS_REGION: eu-central-1
+
 
 jobs:
   terraform:
@@ -27,7 +29,9 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      #aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: $AWS_REGION 
+
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -40,8 +44,8 @@ jobs:
         terraform workspace select $TF_WORKSPACE || terraform workspace new $TF_WORKSPACE
 
     - name: Terraform Plan
-      run: terraform plan -var="region=${{ secrets.AWS_REGION }}"
+      run: terraform plan -var="region=eu-central-1"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve -var="region=${{ secrets.AWS_REGION }}"
+      run: terraform apply -auto-approve -var="region=eu-central-1"
